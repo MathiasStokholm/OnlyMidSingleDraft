@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/OnlyMidSingleDraft/static/css/main.e1a01371.chunk.css",
+    "main.js": "/OnlyMidSingleDraft/static/js/main.dd9e3211.chunk.js",
+    "main.js.map": "/OnlyMidSingleDraft/static/js/main.dd9e3211.chunk.js.map",
+    "runtime-main.js": "/OnlyMidSingleDraft/static/js/runtime-main.27d84cfd.js",
+    "runtime-main.js.map": "/OnlyMidSingleDraft/static/js/runtime-main.27d84cfd.js.map",
+    "static/css/2.0624914a.chunk.css": "/OnlyMidSingleDraft/static/css/2.0624914a.chunk.css",
+    "static/js/2.10c1e665.chunk.js": "/OnlyMidSingleDraft/static/js/2.10c1e665.chunk.js",
+    "static/js/2.10c1e665.chunk.js.map": "/OnlyMidSingleDraft/static/js/2.10c1e665.chunk.js.map",
+    "index.html": "/OnlyMidSingleDraft/index.html",
+    "precache-manifest.15aa5d5b77e11cf2f8cd1f50e925ce1f.js": "/OnlyMidSingleDraft/precache-manifest.15aa5d5b77e11cf2f8cd1f50e925ce1f.js",
+    "service-worker.js": "/OnlyMidSingleDraft/service-worker.js",
+    "static/css/2.0624914a.chunk.css.map": "/OnlyMidSingleDraft/static/css/2.0624914a.chunk.css.map",
+    "static/css/main.e1a01371.chunk.css.map": "/OnlyMidSingleDraft/static/css/main.e1a01371.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.27d84cfd.js",
+    "static/css/2.0624914a.chunk.css",
+    "static/js/2.10c1e665.chunk.js",
+    "static/css/main.e1a01371.chunk.css",
+    "static/js/main.dd9e3211.chunk.js"
+  ]
+}
