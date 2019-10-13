@@ -65,7 +65,7 @@ class MainScreen extends React.Component {
         // Heroes have been loaded - render
         const renderedHeroes = this.state.draft
             .map(hero =>
-                <Col key={hero['id']}>
+                <Col md="4" xs="12" key={hero['id']}>
                     <Card>
                         <CardImg top width="100%" src={this.convertToApiPath(hero['img'])} alt="hero image" />
                         <CardBody>
