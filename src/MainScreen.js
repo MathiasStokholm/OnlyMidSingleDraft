@@ -70,8 +70,10 @@ class MainScreen extends React.Component {
                         <CardImg top width="100%" src={this.convertToApiPath(hero['img'])} alt="hero image" />
                         <CardBody>
                             <CardTitle><h3>{hero['localized_name']}</h3></CardTitle>
-                            <CardSubtitle>{hero['attack_type'] + " " + hero['primary_attr']}</CardSubtitle>
-                            <CardText>{"roles: " + hero['roles'].join(", ")}</CardText>
+                            <CardSubtitle className="text-primary">
+                                {hero['attack_type'] + " " + hero['primary_attr']}
+                            </CardSubtitle>
+                            <CardText className="text-info">{hero['roles'].join(", ")}</CardText>
                         </CardBody>
                     </Card>
                 </Col>
@@ -85,7 +87,10 @@ class MainScreen extends React.Component {
                         {renderedHeroes}
                     </Row>
                 </Container>
-                <Button color="primary" onClick={() => this.performDraft()}>Roll the dice again...</Button>
+                <Button color="primary" onClick={(e) => {
+                    e.preventDefault();
+                    this.performDraft();
+                }}>Roll the dice again...</Button>
             </AlignedText>
         );
     }
