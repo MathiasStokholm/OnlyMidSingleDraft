@@ -2,6 +2,7 @@ import React from 'react'
 import { Spinner, Button, Container, Row, Col, Card, CardImg, CardText, CardBody, CardTitle,
     CardSubtitle } from 'reactstrap';
 import styled from 'styled-components';
+import  { firebase, FirebaseContext } from './firebase';
 
 const AlignedText = styled.div`
   text-align: center;
@@ -14,8 +15,20 @@ class MainScreen extends React.Component {
         super(props);
         this.state = {
             heroes: [],
-            draft: []
+            draft: [],
+            team: []
         };
+
+        const db = firebase.firestore();
+
+        db.collection("game").doc("9op54o2N9uJEfyuHb5B3").get().then(doc => {
+            const team = doc.data().teams.dire;
+            console.log(team);
+            this.setState({
+                team: team
+            });
+        });
+
 
         // Fetch heroes from API, then perform first draft
         fetch("https://api.opendota.com/api/heroStats")
@@ -79,8 +92,13 @@ class MainScreen extends React.Component {
                 </Col>
             );
 
+        const draftedTeam = this.state.team.map(entry => {
+           return <h2>{entry["player"]} - {this.state.heroes[entry["pick"]]["name"]}</h2>
+        });
+
         return (
             <AlignedText>
+                {draftedTeam}
                 <h1>You have been given:</h1>
                 <Container style={{marginTop: "20px", marginBottom: "50px"}}>
                     <Row>

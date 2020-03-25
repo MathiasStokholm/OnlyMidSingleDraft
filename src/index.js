@@ -4,6 +4,7 @@ import MainScreen from './MainScreen';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
+import {Firebase, FirebaseContext} from './firebase';
 import * as serviceWorker from './serviceWorker';
 
 const Main = styled.div`
@@ -12,9 +13,11 @@ const Main = styled.div`
 `;
 
 ReactDOM.render((
-        <Main>
-            <MainScreen/>
-        </Main>
+        <FirebaseContext.Provider value={new Firebase()}>
+            <Main>
+                <MainScreen/>
+            </Main>
+        </FirebaseContext.Provider>
     ),
     document.getElementById('root')
 );
