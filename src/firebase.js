@@ -17,10 +17,8 @@ class Firebase {
     }
 }
 
-const FirebaseContext = React.createContext(null);
 
 export {
     firebase,
     Firebase,
-    FirebaseContext
 };
