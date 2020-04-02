@@ -49,7 +49,7 @@ class MainScreen extends React.Component {
         return "https://api.opendota.com" + path
     }
 
-    randomSample(items){
+    randomSample(items) {
         return items[Math.floor(Math.random() * items.length)];
     }
 

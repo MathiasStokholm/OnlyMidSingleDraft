@@ -58,7 +58,7 @@ class App extends React.Component {
         return (
             <BrowserRouter>
                 <div>
-                    <Header db={this.db}/>
+                    <Header db={this.db} heroStats={this.state.heroStats}/>
                     <Main>
                         <Switch>
                             <Route exact

@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-    Button, Col, Container,
+    Button, Card, CardBody, CardHeader, CardImg, CardSubtitle, CardText, CardTitle, Col, Container,
     Input, ListGroupItem, ListGroupItemHeading, ListGroupItemText,
     Modal,
     ModalBody,
@@ -9,6 +9,7 @@ import {
 } from "reactstrap";
 import Chat from "./chat";
 import {Link} from "react-router-dom";
+import {firebase} from "../firebase";
 
 
 class Team extends React.Component {
@@ -27,13 +28,23 @@ class Team extends React.Component {
     }
 
     playerNameChosen() {
+        const chosenPlayerName = this.state.playerNameInput;
         this.setState({
-            playerName: this.state.playerNameInput,
+            playerName: chosenPlayerName,
             playerNameInput: "",
-        })
+        });
+
+        let gameDocRef = this.props.db.collection("game").doc("9op54o2N9uJEfyuHb5B3");
+        const path = "teams." + this.props.teamName + ".players";
+        gameDocRef.update(path, firebase.firestore.FieldValue.arrayUnion(chosenPlayerName));
+    }
+
+    convertToApiPath(path) {
+        return "https://api.opendota.com" + path
     }
 
     render() {
+        // Show modal to allow picking player name if needed
         const playerName = this.state.playerName;
         if (playerName == null) {
             return (
@@ -56,6 +67,8 @@ class Team extends React.Component {
                 </Modal>
             );
         }
+
+        // If team is undefined, just show a loading screen
         const team = this.props.team;
         const heroStats = this.props.heroStats;
         if (team == null || heroStats == null) {
@@ -68,21 +81,51 @@ class Team extends React.Component {
         }
 
         const teamName = this.props.teamName;
-        const drafts = team["draft"].map(entry => {
-            return <Row>
-                <Col>
-                    {entry["player"]}
-                </Col>
-                {entry["heroes"].map(hero => <Col>{heroStats[hero]["localized_name"]}</Col>)}
-            </Row>;
-        });
+        const players = team["players"];
+
+        // Look up a hero based on its ID in the dataset (rather than the index in the JSON array)
+        const findHero = (idx) => {
+            return heroStats.filter(hero => hero["id"] === idx)[0];
+        };
+
+        const createPlayerRow = (player, hero_ids) => {
+            return (
+                <Row style={{"max-width": "600px", "margin": "0 auto"}}>
+                    <Col>
+                        <h2>{player}</h2>
+                    </Col>
+                    {hero_ids.map(hero_id => {
+                        const hero = findHero(hero_id);
+                        return (
+                            <Col style={{"padding": "5px"}}>
+                                <Card>
+                                    <CardImg top src={this.convertToApiPath(hero['img'])}
+                                             alt="hero image"/>
+                                    <CardBody style={{
+                                        "padding": "0px",
+                                        "textAlign": "center"
+                                    }}>{hero['localized_name']}</CardBody>
+                                </Card>
+                            </Col>
+                        )
+                    })}
+                </Row>
+            );
+        };
+
+        // Look up drafts for players on team
+        let drafts = [];
+        for (let index = 0; index < players.length; index++) {
+            const player = players[index];
+            const hero_ids = team["draft"][index.toString()];
+            drafts.push(createPlayerRow(player, hero_ids));
+        }
 
         return (
             <Container>
                 {drafts}
                 <Row>
                     <Col>
-                        <h2>Chat</h2>
                         <Chat db={this.props.db}
                               player={this.state.playerName}
                               team={teamName}

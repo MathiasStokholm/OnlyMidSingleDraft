@@ -53,7 +53,7 @@ class Chat extends React.Component {
 
         return (
             <div>
-                <ListGroup>
+                <ListGroup flush style={{"overflow-y": "scroll", "max-height": "200px"}}>
                     {messageList}
                 </ListGroup>
                 <InputGroup>
