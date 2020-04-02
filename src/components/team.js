@@ -1,11 +1,11 @@
 import React from 'react'
 import {
-    Button, Card, CardBody, CardHeader, CardImg, CardSubtitle, CardText, CardTitle, Col, Container,
-    Input, ListGroupItem, ListGroupItemHeading, ListGroupItemText,
+    Button, Card, CardImg, Col, Container,
+    Input,
     Modal,
     ModalBody,
     ModalFooter,
-    ModalHeader, Row, Spinner,
+    ModalHeader, Row, Spinner, CardHeader,
 } from "reactstrap";
 import Chat from "./chat";
 import {Link} from "react-router-dom";
@@ -44,9 +44,27 @@ class Team extends React.Component {
     }
 
     render() {
+        // If team is undefined, just show a loading screen
+        const team = this.props.team;
+        const heroStats = this.props.heroStats;
+        if (team == null || heroStats == null) {
+            return (
+                <div>
+                    <h1>Loading teams...</h1>
+                    <Spinner color="primary"/>
+                </div>
+            )
+        }
+
         // Show modal to allow picking player name if needed
         const playerName = this.state.playerName;
+        const players = team["players"];
         if (playerName == null) {
+            // Navigate back to index if team is full
+            if (players.length >= 5) {
+                this.props.history.push("/")
+            }
+
             return (
                 <Modal isOpen autoFocus={false} className={this.props.className}>
                     <ModalHeader>Specify name</ModalHeader>
@@ -68,20 +86,7 @@ class Team extends React.Component {
             );
         }
 
-        // If team is undefined, just show a loading screen
-        const team = this.props.team;
-        const heroStats = this.props.heroStats;
-        if (team == null || heroStats == null) {
-            return (
-                <div>
-                    <h1>Loading teams...</h1>
-                    <Spinner color="primary"/>
-                </div>
-            )
-        }
-
         const teamName = this.props.teamName;
-        const players = team["players"];
 
         // Look up a hero based on its ID in the dataset (rather than the index in the JSON array)
         const findHero = (idx) => {
@@ -90,25 +95,29 @@ class Team extends React.Component {
 
         const createPlayerRow = (player, hero_ids) => {
             return (
-                <Row style={{"max-width": "600px", "margin": "0 auto"}}>
-                    <Col>
-                        <h2>{player}</h2>
-                    </Col>
-                    {hero_ids.map(hero_id => {
-                        const hero = findHero(hero_id);
-                        return (
-                            <Col style={{"padding": "5px"}}>
-                                <Card>
-                                    <CardImg top src={this.convertToApiPath(hero['img'])}
-                                             alt="hero image"/>
-                                    <CardBody style={{
-                                        "padding": "0px",
-                                        "textAlign": "center"
-                                    }}>{hero['localized_name']}</CardBody>
-                                </Card>
-                            </Col>
-                        )
-                    })}
+                <Row style={{"marginBottom": "10px"}}>
+                    <div style={{"width": "100%", "textAlign": "center"}}>
+                        <Col>
+                            <h5 style={{"marginBottom": "2px"}}>{player}</h5>
+                        </Col>
+                    </div>
+                    <Row>
+                        {hero_ids.map(hero_id => {
+                            const hero = findHero(hero_id);
+                            const tooltipId = "Card_" + player + hero_id;
+                            return (
+                                <Col xs="4" style={{"padding": "2px"}}>
+                                    <Card href="#" id={tooltipId}>
+                                        <CardImg top src={this.convertToApiPath(hero['img'])}
+                                                 alt="hero image"/>
+                                         <CardHeader style={{"fontSize": "1.0rem"}}>
+                                             {hero['localized_name']}
+                                         </CardHeader>
+                                    </Card>
+                                </Col>
+                            )
+                        })}
+                    </Row>
                 </Row>
             );
         };
@@ -123,9 +132,12 @@ class Team extends React.Component {
 
         return (
             <Container>
-                {drafts}
                 <Row>
-                    <Col>
+                    <Col sm="12" md="6">
+                        {drafts}
+                    </Col>
+                    <Col sm="12" md="6">
+                        <h5 style={{"width": "100%", "textAlign": "center"}}>Chat:</h5>
                         <Chat db={this.props.db}
                               player={this.state.playerName}
                               team={teamName}

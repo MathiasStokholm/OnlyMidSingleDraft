@@ -9,7 +9,7 @@ import {
     Col,
     Container,
     ListGroup,
-    ListGroupItem, NavbarBrand,
+    ListGroupItem,
     Row,
     Spinner
 } from "reactstrap";
@@ -45,14 +45,15 @@ class Welcome extends React.Component {
                                 src="https://gamepedia.cursecdn.com/dota2_gamepedia/9/9b/Radiant_logo.png?version=32e00d1012d73614f60704d6a77207cb"
                                 alt="Radiant logo"/>
                             <CardBody>
-                                <CardTitle>Radiant</CardTitle>
+                                <CardTitle><h2>Radiant</h2></CardTitle>
                                 <CardSubtitle>Players:</CardSubtitle>
                                 <CardText>
-                                    <ListGroup>
+                                    <ListGroup flush>
                                         {radiantPlayers}
                                     </ListGroup>
                                 </CardText>
-                                <Button color="primary" tag={Link} to="/radiant">Join</Button>
+                                <Button color="primary" tag={Link} to="/radiant"
+                                        disabled={teams["radiant"]["players"].length >= 5}>Join</Button>
                             </CardBody>
                         </Card>
                     </Col>
@@ -62,14 +63,15 @@ class Welcome extends React.Component {
                                 src="https://gamepedia.cursecdn.com/dota2_gamepedia/4/46/Dire_logo.png?version=26566f7414e47fa1203d2f0a0ae3d64b"
                                 alt="Dire logo"/>
                             <CardBody>
-                                <CardTitle>Dire</CardTitle>
+                                <CardTitle><h2>Dire</h2></CardTitle>
                                 <CardSubtitle>Players:</CardSubtitle>
                                 <CardText>
-                                    <ListGroup>
+                                    <ListGroup flush>
                                         {direPlayers}
                                     </ListGroup>
                                 </CardText>
-                                <Button color="primary" tag={Link} to="/dire">Join</Button>
+                                <Button color="primary" tag={Link} to="/dire"
+                                        disabled={teams["dire"]["players"].length >= 5}>Join</Button>
                             </CardBody>
                         </Card>
                     </Col>

@@ -1,14 +1,8 @@
 import React from 'react'
 import {
-    Button, InputGroupAddon, InputGroup, Input, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText
+    Button, InputGroupAddon, InputGroup, Input, ListGroup, ListGroupItem
 } from 'reactstrap';
-import styled from 'styled-components';
-import {firebase, FirebaseContext} from '../firebase';
-
-const AlignedText = styled.div`
-  text-align: center;
-  vertical-align: middle;
-`;
+import {firebase} from '../firebase';
 
 
 class Chat extends React.Component {
@@ -17,7 +11,9 @@ class Chat extends React.Component {
         this.state = {
             inputValue: ""
         };
+    }
 
+    componentDidMount() {
         // Send initial message on joining
         this.submitMessage("Has joined the team!")
     }
@@ -28,12 +24,20 @@ class Chat extends React.Component {
         });
     }
 
+    handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            this.submitMessage(this.state.inputValue);
+        }
+    }
+
     submitMessage(message) {
+        const messageCopy = (' ' + message).slice(1);
         let gameDocRef = this.props.db.collection("game").doc("9op54o2N9uJEfyuHb5B3");
         const path = "teams." + this.props.team + ".chat";
         gameDocRef.update(path, firebase.firestore.FieldValue.arrayUnion({
+            "timestamp": new Date().toString(),
             "player": this.props.player,
-            "message": message
+            "message": messageCopy,
         }));
 
         this.setState({
@@ -44,20 +48,19 @@ class Chat extends React.Component {
     render() {
         const messageList = this.props.messages.map(message => {
             return <ListGroupItem>
-                <ListGroupItemHeading>{message["player"]}</ListGroupItemHeading>
-                <ListGroupItemText>
-                    {message["message"]}
-                </ListGroupItemText>
+                {message["player"] + ": " + message["message"]}
             </ListGroupItem>;
         });
 
         return (
             <div>
-                <ListGroup flush style={{"overflow-y": "scroll", "max-height": "200px"}}>
+                <ListGroup flush style={{"overflow-y": "scroll", "height": "100%"}}>
                     {messageList}
                 </ListGroup>
                 <InputGroup>
-                    <Input onChange={(event) => this.updateInputValue(event)}/>
+                    <Input value={this.state.inputValue}
+                           onChange={(event) => this.updateInputValue(event)}
+                           onKeyPress={(event) => this.handleKeyPress(event)}/>
                     <InputGroupAddon addonType="append">
                         <Button color="info"
                                 disabled={this.state.inputValue.length <= 0}

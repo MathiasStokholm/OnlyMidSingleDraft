@@ -4,11 +4,10 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
-import {firebase, Firebase, FirebaseContext} from './firebase';
+import {firebase, Firebase} from './firebase';
 import * as serviceWorker from './serviceWorker';
 import Header from "./components/header";
 import Welcome from "./components/welcome";
-import Chat from "./components/chat";
 import Team from "./components/team";
 import MainScreen from "./MainScreen";
 
