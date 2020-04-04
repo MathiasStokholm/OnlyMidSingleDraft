@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {HashRouter, Route, Switch} from 'react-router-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
@@ -47,7 +47,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <BrowserRouter ref={(router) => { this.router = router; }}>
+            <HashRouter basename="/" ref={(router) => { this.router = router; }}>
                 <div>
                     <Header backend={this.backend} heroStats={this.state.heroStats}/>
                     <Main>
@@ -78,10 +78,11 @@ class App extends React.Component {
                                                             heroStats={this.state.heroStats}
                                                             messages={this.state.direMessages}/>}
                             />
+                            <Route render={(props) => <Welcome {...props} teams={this.state.teams}/>}/>
                         </Switch>
                     </Main>
                 </div>
-            </BrowserRouter>
+            </HashRouter>
         );
     }
 }
