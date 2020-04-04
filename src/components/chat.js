@@ -41,8 +41,9 @@ class Chat extends React.Component {
         this.messagesEnd.scrollIntoView({behavior: "smooth"});
     };
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.messages !== this.props.messages) {
+    componentDidUpdate(prevProps) {
+        // Scroll to bottom if update has changed the number of messages
+        if (prevProps.messages.length !== this.props.messages.length) {
             this.scrollToBottom();
         }
     }

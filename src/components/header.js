@@ -47,7 +47,6 @@ class Header extends React.Component {
                 </Modal>
                 <Navbar color="dark" className="navbar-dark" expand="md" style={{marginBottom: '5px'}}>
                     <NavbarBrand tag={Link} to="/">Only Mid Single Draft</NavbarBrand>
-                    <NavbarToggler onClick={this.toggle}/>
                     <Nav className="ml-auto" navbar>
                         <NavItem>
                             <NavLink tag={Link} to="/old">Old App</NavLink>
