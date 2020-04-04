@@ -30,8 +30,7 @@ class App extends React.Component {
             this.setState({
                 heroStats: heroStats
             })
-        });
-        this.backend.listenForChanges((game) => {
+        }, (game) => {
             const teams = game["teams"];
             this.setState({
                 teams: teams,
@@ -40,12 +39,15 @@ class App extends React.Component {
                 radiantMessages: teams["radiant"]["chat"],
                 direMessages: teams["dire"]["chat"],
             })
+        }, () => {
+            console.log("New game detected - forcing all players back to welcome screen");
+            this.router.history.push("/");
         });
     };
 
     render() {
         return (
-            <BrowserRouter>
+            <BrowserRouter ref={(router) => { this.router = router; }}>
                 <div>
                     <Header backend={this.backend} heroStats={this.state.heroStats}/>
                     <Main>

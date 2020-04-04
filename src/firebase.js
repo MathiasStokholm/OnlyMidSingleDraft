@@ -1,7 +1,8 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
+import 'firebase/firestore'
 
 // The current game we reuse
-const GAME_ID = "9op54o2N9uJEfyuHb5B3";
+const GAME = "game";
 
 class Backend {
     config = {
@@ -14,10 +15,25 @@ class Backend {
         appId: "1:464340805319:web:65283996aefc809d2800e2"
     };
 
-    constructor(onHeroStatsAvailable) {
+    constructor(onHeroStatsAvailable, onGameChanged, onNewGame) {
         firebase.initializeApp(this.config);
         this.db = firebase.firestore();
-        this.gameDoc = this.db.collection("game").doc(GAME_ID);
+        this.gameCollection = this.db.collection(GAME);
+        this.gameDoc = null;
+
+        this.gameCollection
+            .orderBy("timestamp")
+            .limitToLast(1)
+            .onSnapshot(games => {
+                games.docs.forEach(doc => {
+                    const newGame = this.gameDoc == null? false: this.gameDoc.id !== doc.id;
+                    this.gameDoc = doc.ref;
+                    if (newGame) {
+                        onNewGame();
+                    }
+                    onGameChanged(doc.data());
+                });
+            }, error => console.log(error));
 
         // Fetch the actual dota 2 data
         this.heroStats = null;
@@ -30,13 +46,6 @@ class Backend {
             .catch(reason => console.log(reason));
     }
 
-
-    listenForChanges(onGameChangedFunc) {
-        this.gameDoc.onSnapshot(doc => {
-            onGameChangedFunc(doc.data());
-        });
-    }
-
     convertToApiPath(path) {
         return "https://api.opendota.com" + path
     }
@@ -44,7 +53,7 @@ class Backend {
     sendChatMessage(team, player, message) {
         const path = "teams." + team + ".chat";
         this.gameDoc.update(path, firebase.firestore.FieldValue.arrayUnion({
-            "timestamp": new Date().toString(),
+            "timestamp": firebase.firestore.Timestamp.fromDate(new Date()),
             "player": player,
             "message": message,
         }))
@@ -59,13 +68,11 @@ class Backend {
 
     setSelectedHero(teamName, playerIndex, heroId) {
         const path = `teams.${teamName}.selectedHeroes.${playerIndex}`;
-        console.log(teamName, playerIndex, heroId, path);
         this.gameDoc.update(path, heroId)
             .catch(reason => console.log(reason));
     }
 
     startNewGame() {
-        // TODO: Add dialog here to avoid mistakes when clicking new game
         if (this.heroStats === null) {
             console.log("Cannot create new game - hero stats not loaded yet");
             return;
@@ -107,8 +114,9 @@ class Backend {
             }
         };
 
-        // TODO: Replace this with something that creates a new game instead of overwriting old one
-        this.gameDoc.set({
+        // Create a new game!
+        this.gameCollection.add({
+            timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
             teams: {
                 radiant: createTeam(),
                 dire: createTeam(),

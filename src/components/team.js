@@ -92,7 +92,7 @@ class Team extends React.Component {
 
         const createPlayerRow = (playerIndex, player, hero_ids, selected_id) => {
             return (
-                <Row style={{"marginBottom": "10px"}}>
+                <Row style={{"marginBottom": "10px"}} key={player}>
                     <div style={{"width": "100%", "textAlign": "center"}}>
                         <Col>
                             <h5 style={{"marginBottom": "2px"}}>{player}</h5>
@@ -104,7 +104,7 @@ class Team extends React.Component {
                             const selected = hero_id === selected_id;
                             const tooltipId = "Card_" + player + hero_id;
                             return (
-                                <Col xs="4" style={{"padding": "2px"}}>
+                                <Col xs="4" style={{"padding": "2px"}} key={tooltipId}>
                                     <Card href="#" id={tooltipId}
                                           style={{cursor: "pointer"}}
                                           onClick={() => this.onHeroClicked(playerIndex, hero_id)}

@@ -49,7 +49,7 @@ class Chat extends React.Component {
 
     render() {
         const messageList = this.props.messages.map(message => {
-            return <ListGroupItem>
+            return <ListGroupItem key={message["timestamp"]}>
                 {message["player"] + ": " + message["message"]}
             </ListGroupItem>;
         });
@@ -65,7 +65,7 @@ class Chat extends React.Component {
 
         return (
             <div>
-                <ListGroup flush style={{"overflow-y": "auto", "maxHeight": "700px"}}>
+                <ListGroup flush style={{"overflowY": "auto", "maxHeight": "700px"}}>
                     {messageList}
                     {dummyForScroll}
                 </ListGroup>

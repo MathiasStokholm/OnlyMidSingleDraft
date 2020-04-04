@@ -10,10 +10,6 @@ import {
 } from 'reactstrap';
 
 class Header extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     startNewGame() {
         // TODO: Add dialog here to avoid mistakes when clicking new game
         this.props.backend.startNewGame();

@@ -4,7 +4,7 @@ import {
     Card,
     CardBody,
     CardImg,
-    CardSubtitle, CardText,
+    CardSubtitle,
     CardTitle,
     Col,
     Container,
@@ -29,11 +29,11 @@ class Welcome extends React.Component {
         }
 
         const radiantPlayers = teams["radiant"]["players"].map(player => {
-            return <ListGroupItem>{player}</ListGroupItem>
+            return <ListGroupItem key={player}>{player}</ListGroupItem>
         });
 
         const direPlayers = teams["dire"]["players"].map(player => {
-            return <ListGroupItem>{player}</ListGroupItem>
+            return <ListGroupItem key={player}>{player}</ListGroupItem>
         });
 
         return (
@@ -47,11 +47,9 @@ class Welcome extends React.Component {
                             <CardBody>
                                 <CardTitle><h2>Radiant</h2></CardTitle>
                                 <CardSubtitle>Players:</CardSubtitle>
-                                <CardText>
-                                    <ListGroup flush>
-                                        {radiantPlayers}
-                                    </ListGroup>
-                                </CardText>
+                                <ListGroup flush>
+                                    {radiantPlayers}
+                                </ListGroup>
                                 <Button color="primary" tag={Link} to="/radiant"
                                         disabled={teams["radiant"]["players"].length >= 5}>Join</Button>
                             </CardBody>
@@ -65,11 +63,9 @@ class Welcome extends React.Component {
                             <CardBody>
                                 <CardTitle><h2>Dire</h2></CardTitle>
                                 <CardSubtitle>Players:</CardSubtitle>
-                                <CardText>
-                                    <ListGroup flush>
-                                        {direPlayers}
-                                    </ListGroup>
-                                </CardText>
+                                <ListGroup flush>
+                                    {direPlayers}
+                                </ListGroup>
                                 <Button color="primary" tag={Link} to="/dire"
                                         disabled={teams["dire"]["players"].length >= 5}>Join</Button>
                             </CardBody>
