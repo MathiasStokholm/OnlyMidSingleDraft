@@ -101,7 +101,7 @@ class Team extends React.Component {
                             <h5 style={{"marginBottom": "2px"}}>{player}</h5>
                         </Col>
                     </div>
-                    <Row>
+                    <Row style={{"marginLeft": "0px", "marginRight": "0px"}}>
                         {hero_ids.map(hero_id => {
                             const hero = findHero(hero_id);
                             const tooltipId = "Card_" + player + hero_id;
@@ -110,7 +110,7 @@ class Team extends React.Component {
                                     <Card href="#" id={tooltipId}>
                                         <CardImg top src={this.convertToApiPath(hero['img'])}
                                                  alt="hero image"/>
-                                         <CardHeader style={{"fontSize": "1.0rem"}}>
+                                         <CardHeader style={{"fontSize": "1.0rem", "textAlign": "center", "padding": "0.75rem 0.25rem"}}>
                                              {hero['localized_name']}
                                          </CardHeader>
                                     </Card>

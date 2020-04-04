@@ -15,7 +15,8 @@ class Chat extends React.Component {
 
     componentDidMount() {
         // Send initial message on joining
-        this.submitMessage("Has joined the team!")
+        this.submitMessage("Has joined the team!");
+        this.scrollToBottom();
     }
 
     updateInputValue(event) {
@@ -45,6 +46,16 @@ class Chat extends React.Component {
         });
     }
 
+    scrollToBottom = () => {
+        this.messagesEnd.scrollIntoView({behavior: "smooth"});
+    };
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.messages !== this.props.messages) {
+            this.scrollToBottom();
+        }
+    }
+
     render() {
         const messageList = this.props.messages.map(message => {
             return <ListGroupItem>
@@ -52,10 +63,20 @@ class Chat extends React.Component {
             </ListGroupItem>;
         });
 
+        // Dummy div used to scroll easily to bottom of messages listasd
+        const dummyForScroll = (
+            <div style={{float: "left", clear: "both"}}
+                 ref={(el) => {
+                     this.messagesEnd = el;
+                 }}>
+            </div>
+        );
+
         return (
             <div>
-                <ListGroup flush style={{"overflow-y": "scroll", "height": "100%"}}>
+                <ListGroup flush style={{"overflow-y": "auto", "height": "700px"}}>
                     {messageList}
+                    {dummyForScroll}
                 </ListGroup>
                 <InputGroup>
                     <Input value={this.state.inputValue}
