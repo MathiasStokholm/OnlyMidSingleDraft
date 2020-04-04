@@ -1,9 +1,6 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore'
 
-// The current game we reuse
-const GAME = "game";
-
 class Backend {
     config = {
         apiKey: "AIzaSyCVXi7MSmaFcSDtvK2eYdpggzQgbHOf_dk",
@@ -18,9 +15,19 @@ class Backend {
     constructor(onHeroStatsAvailable, onGameChanged, onNewGame) {
         firebase.initializeApp(this.config);
         this.db = firebase.firestore();
-        this.gameCollection = this.db.collection(GAME);
-        this.gameDoc = null;
 
+        if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+            // Access testing game collection
+            console.log("Using test game collection");
+            this.gameCollectionName = "game_test";
+        } else {
+            // Access production game collection
+            console.log("Using production game collection");
+            this.gameCollectionName = "game";
+        }
+
+        this.gameCollection = this.db.collection(this.gameCollectionName);
+        this.gameDoc = null;
         this.gameCollection
             .orderBy("timestamp")
             .limitToLast(1)
