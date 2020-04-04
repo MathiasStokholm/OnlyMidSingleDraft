@@ -36,8 +36,8 @@ class Team extends React.Component {
         this.props.backend.setPlayerName(this.props.teamName, chosenPlayerName);
     }
 
-    convertToApiPath(path) {
-        return "https://api.opendota.com" + path
+    onHeroClicked(playerIndex, heroId) {
+        this.props.backend.setSelectedHero(this.props.teamName, playerIndex, heroId)
     }
 
     render() {
@@ -90,7 +90,7 @@ class Team extends React.Component {
             return heroStats.filter(hero => hero["id"] === idx)[0];
         };
 
-        const createPlayerRow = (player, hero_ids) => {
+        const createPlayerRow = (playerIndex, player, hero_ids, selected_id) => {
             return (
                 <Row style={{"marginBottom": "10px"}}>
                     <div style={{"width": "100%", "textAlign": "center"}}>
@@ -101,15 +101,23 @@ class Team extends React.Component {
                     <Row style={{"marginLeft": "0px", "marginRight": "0px"}}>
                         {hero_ids.map(hero_id => {
                             const hero = findHero(hero_id);
+                            const selected = hero_id === selected_id;
                             const tooltipId = "Card_" + player + hero_id;
                             return (
                                 <Col xs="4" style={{"padding": "2px"}}>
-                                    <Card href="#" id={tooltipId}>
-                                        <CardImg top src={this.convertToApiPath(hero['img'])}
+                                    <Card href="#" id={tooltipId}
+                                          style={{cursor: "pointer"}}
+                                          onClick={() => this.onHeroClicked(playerIndex, hero_id)}
+                                          {...(selected ? {color: "info", inverse: true} : {})}>
+                                        <CardImg top src={this.props.backend.convertToApiPath(hero['img'])}
                                                  alt="hero image"/>
-                                         <CardHeader style={{"fontSize": "1.0rem", "textAlign": "center", "padding": "0.75rem 0.25rem"}}>
-                                             {hero['localized_name']}
-                                         </CardHeader>
+                                        <CardHeader style={{
+                                            "fontSize": "1.0rem",
+                                            "textAlign": "center",
+                                            "padding": "0.75rem 0.25rem"
+                                        }}>
+                                            {hero['localized_name']}
+                                        </CardHeader>
                                     </Card>
                                 </Col>
                             )
@@ -124,7 +132,8 @@ class Team extends React.Component {
         for (let index = 0; index < players.length; index++) {
             const player = players[index];
             const hero_ids = team["draft"][index.toString()];
-            drafts.push(createPlayerRow(player, hero_ids));
+            const selected_id = team["selectedHeroes"][index.toString()];
+            drafts.push(createPlayerRow(index, player, hero_ids, selected_id));
         }
 
         return (

@@ -65,7 +65,7 @@ class Chat extends React.Component {
 
         return (
             <div>
-                <ListGroup flush style={{"overflow-y": "auto", "height": "700px"}}>
+                <ListGroup flush style={{"overflow-y": "auto", "maxHeight": "700px"}}>
                     {messageList}
                     {dummyForScroll}
                 </ListGroup>

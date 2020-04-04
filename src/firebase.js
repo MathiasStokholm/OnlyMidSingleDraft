@@ -1,5 +1,4 @@
 import firebase from 'firebase';
-import React from 'react';
 
 // The current game we reuse
 const GAME_ID = "9op54o2N9uJEfyuHb5B3";
@@ -27,7 +26,8 @@ class Backend {
             .then(result => {
                 this.heroStats = result;
                 onHeroStatsAvailable(result);
-            });
+            })
+            .catch(reason => console.log(reason));
     }
 
 
@@ -37,18 +37,31 @@ class Backend {
         });
     }
 
+    convertToApiPath(path) {
+        return "https://api.opendota.com" + path
+    }
+
     sendChatMessage(team, player, message) {
         const path = "teams." + team + ".chat";
         this.gameDoc.update(path, firebase.firestore.FieldValue.arrayUnion({
             "timestamp": new Date().toString(),
             "player": player,
             "message": message,
-        }));
+        }))
+            .catch(reason => console.log(reason));
     }
 
     setPlayerName(teamName, playerName) {
         const path = "teams." + teamName + ".players";
-        this.gameDoc.update(path, firebase.firestore.FieldValue.arrayUnion(playerName));
+        this.gameDoc.update(path, firebase.firestore.FieldValue.arrayUnion(playerName))
+            .catch(reason => console.log(reason));
+    }
+
+    setSelectedHero(teamName, playerIndex, heroId) {
+        const path = `teams.${teamName}.selectedHeroes.${playerIndex}`;
+        console.log(teamName, playerIndex, heroId, path);
+        this.gameDoc.update(path, heroId)
+            .catch(reason => console.log(reason));
     }
 
     startNewGame() {
@@ -83,6 +96,13 @@ class Backend {
                     2: draft(),
                     3: draft(),
                     4: draft(),
+                },
+                selectedHeroes: {
+                    0: null,
+                    1: null,
+                    2: null,
+                    3: null,
+                    4: null,
                 }
             }
         };
@@ -93,7 +113,9 @@ class Backend {
                 radiant: createTeam(),
                 dire: createTeam(),
             }
-        }).then(() => console.log("Created new game!")).catch(reason => console.log(reason));
+        })
+            .then(() => console.log("Created new game!"))
+            .catch(reason => console.log(reason));
 
     }
 
