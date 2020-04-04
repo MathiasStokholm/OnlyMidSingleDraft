@@ -2,7 +2,6 @@ import React from 'react'
 import {
     Button, InputGroupAddon, InputGroup, Input, ListGroup, ListGroupItem
 } from 'reactstrap';
-import {firebase} from '../firebase';
 
 
 class Chat extends React.Component {
@@ -32,15 +31,7 @@ class Chat extends React.Component {
     }
 
     submitMessage(message) {
-        const messageCopy = (' ' + message).slice(1);
-        let gameDocRef = this.props.db.collection("game").doc("9op54o2N9uJEfyuHb5B3");
-        const path = "teams." + this.props.team + ".chat";
-        gameDocRef.update(path, firebase.firestore.FieldValue.arrayUnion({
-            "timestamp": new Date().toString(),
-            "player": this.props.player,
-            "message": messageCopy,
-        }));
-
+        this.props.backend.sendChatMessage(this.props.team, this.props.player, message);
         this.setState({
             inputValue: ""
         });

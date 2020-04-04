@@ -9,7 +9,6 @@ import {
 } from "reactstrap";
 import Chat from "./chat";
 import {Link} from "react-router-dom";
-import {firebase} from "../firebase";
 
 
 class Team extends React.Component {
@@ -34,9 +33,7 @@ class Team extends React.Component {
             playerNameInput: "",
         });
 
-        let gameDocRef = this.props.db.collection("game").doc("9op54o2N9uJEfyuHb5B3");
-        const path = "teams." + this.props.teamName + ".players";
-        gameDocRef.update(path, firebase.firestore.FieldValue.arrayUnion(chosenPlayerName));
+        this.props.backend.setPlayerName(this.props.teamName, chosenPlayerName);
     }
 
     convertToApiPath(path) {
@@ -138,7 +135,7 @@ class Team extends React.Component {
                     </Col>
                     <Col sm="12" md="6">
                         <h5 style={{"width": "100%", "textAlign": "center"}}>Chat:</h5>
-                        <Chat db={this.props.db}
+                        <Chat backend={this.props.backend}
                               player={this.state.playerName}
                               team={teamName}
                               messages={this.props.messages}/>

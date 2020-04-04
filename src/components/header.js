@@ -16,54 +16,7 @@ class Header extends React.Component {
 
     startNewGame() {
         // TODO: Add dialog here to avoid mistakes when clicking new game
-        const heroStats = this.props.heroStats;
-
-        // Sort into a lists of int, str and agi
-        let mappedHeroes = {int: [], str: [], agi: []};
-        heroStats.forEach(hero => {
-            const heroAttribute = hero['primary_attr'];
-            mappedHeroes[heroAttribute].push(hero)
-        });
-
-        const draft = () => {
-            return [
-                this.randomSamplePop(mappedHeroes["int"])["id"],
-                this.randomSamplePop(mappedHeroes["str"])["id"],
-                this.randomSamplePop(mappedHeroes["agi"])["id"]
-            ]
-        };
-
-        let createTeam = () => {
-            return {
-                players: [],
-                chat: [],
-                draft: {
-                    0: draft(),
-                    1: draft(),
-                    2: draft(),
-                    3: draft(),
-                    4: draft(),
-                }
-            }
-        };
-
-        // TODO: Replace this with something that creates a new game instead of overwriting old one
-        this.props.db.collection("game")
-            .doc("9op54o2N9uJEfyuHb5B3")
-            .set({
-                teams: {
-                    radiant: createTeam(),
-                    dire: createTeam(),
-                }
-            }).then(() => console.log("Created new game!")).catch(reason => console.log(reason));
-
-    }
-
-    randomSamplePop(items) {
-        const idx = Math.floor(Math.random() * items.length);
-        const sample = items[idx];
-        items.splice(idx, 1);
-        return sample;
+        this.props.backend.startNewGame();
     }
 
     render() {
