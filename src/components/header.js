@@ -5,7 +5,7 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink, Modal, ModalHeader, ModalFooter, Button
+    NavLink, Modal, ModalHeader, ModalFooter, Button, ModalBody
 } from 'reactstrap';
 
 class Header extends React.Component {
@@ -35,12 +35,15 @@ class Header extends React.Component {
             <div>
                 <Modal isOpen={this.state.newGameDialogShowing} className={this.props.className}
                        toggle={() => this.toggleNewGameDialog()}>
-                    <ModalHeader>Really start new game?</ModalHeader>
+                    <ModalHeader>Starting new game</ModalHeader>
+                    <ModalBody>
+                        This will reset the existing draft and teams
+                    </ModalBody>
                     <ModalFooter>
                         <Button color="primary" onClick={() => {
                             this.props.backend.startNewGame();
                             this.toggleNewGameDialog();
-                        }}>Yes!</Button>
+                        }}>Start new game!</Button>
                         <Button color="muted" onClick={() => this.toggleNewGameDialog()}>Cancel</Button>
                     </ModalFooter>
                 </Modal>
