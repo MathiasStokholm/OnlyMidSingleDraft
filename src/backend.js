@@ -12,6 +12,8 @@ class Backend {
         appId: "1:464340805319:web:65283996aefc809d2800e2"
     };
 
+    static HERO_STATS_COLLECTION = "hero_stats";
+
     constructor(onHeroStatsAvailable, onGameChanged, onNewGame) {
         firebase.initializeApp(this.config);
         this.db = firebase.firestore();
@@ -20,20 +22,25 @@ class Backend {
             // Access testing game collection
             console.log("Using test game collection");
             this.gameCollectionName = "game_test";
+            this.heroStatsDocument = "hero_stats_test";
         } else {
             // Access production game collection
             console.log("Using production game collection");
             this.gameCollectionName = "game";
+            this.heroStatsDocument = "hero_stats";
         }
 
+        // Create references to collections
         this.gameCollection = this.db.collection(this.gameCollectionName);
+        this.heroStatsCollection = this.db.collection(Backend.HERO_STATS_COLLECTION);
+
         this.gameDoc = null;
         this.gameCollection
             .orderBy("timestamp")
             .limitToLast(1)
             .onSnapshot(games => {
                 games.docs.forEach(doc => {
-                    const newGame = this.gameDoc == null? false: this.gameDoc.id !== doc.id;
+                    const newGame = this.gameDoc == null ? false : this.gameDoc.id !== doc.id;
                     this.gameDoc = doc.ref;
                     if (newGame) {
                         onNewGame();
@@ -42,15 +49,29 @@ class Backend {
                 });
             }, error => console.log(error));
 
-        // Fetch the actual dota 2 data
+        // Fetch the actual dota 2 data that was cached in firebase
         this.heroStats = null;
-        fetch("https://api.opendota.com/api/heroStats")
-            .then(res => res.json())
-            .then(result => {
-                this.heroStats = result;
-                onHeroStatsAvailable(result);
+        this.heroStatsCollection.doc(this.heroStatsDocument).get()
+            .then(doc => {
+                const stats = doc.data()["stats"];
+                this.heroStats = stats;
+                onHeroStatsAvailable(stats);
             })
-            .catch(reason => console.log(reason));
+            .catch(reason => {
+                // If the backend completely fails, fall back on API data
+                console.log("Error while loading hero stats from backend: " + reason);
+                this.getUpdatedHeroStats()
+                    .then(updatedHeroStats => {
+                        console.log("FALLING BACK TO UPDATED HERO STATS");
+                        this.heroStats = updatedHeroStats;
+                        onHeroStatsAvailable(updatedHeroStats);
+                    });
+            });
+    }
+
+    getUpdatedHeroStats() {
+        return fetch("https://api.opendota.com/api/heroStats")
+            .then(result => result.json());
     }
 
     convertToApiPath(path) {
@@ -121,17 +142,51 @@ class Backend {
             }
         };
 
-        // Create a new game!
-        this.gameCollection.add({
-            timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
-            teams: {
-                radiant: createTeam(),
-                dire: createTeam(),
-            }
-        })
-            .then(() => console.log("Created new game!"))
-            .catch(reason => console.log(reason));
+        const cacheHeroStats = (updatedHeroStats) => {
+            // Mirror the Dota 2 hero data to our backend
+            return this.heroStatsCollection
+                .doc(this.heroStatsDocument)
+                .set({stats: updatedHeroStats})
+                .then(() => {
+                    console.log("Hero stats cached to backend");
+                });
+        };
 
+        const createNewGame = () => {
+            // Create a new game!
+            this.gameCollection.add({
+                timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
+                teams: {
+                    radiant: createTeam(),
+                    dire: createTeam(),
+                }
+            })
+                .then(() => console.log("Created new game!"))
+                .catch(reason => console.log(reason));
+        };
+
+        // Try to fetch updated dota 2 data for caching
+        const updatedHeroStatsPromise = this.getUpdatedHeroStats()
+            .then(updatedHeroStats => {
+                console.log("Loaded updated hero stats from API");
+                return cacheHeroStats(updatedHeroStats);
+            })
+            .catch(reason => {
+                console.log("Failed getting hero stats: " + reason + ". Falling back to cached data");
+                return this.heroStats
+            });
+
+        // Timeout if updating the cached hero stats is taking too long, and just use the current stats instead
+        const timeoutPromise = new Promise((resolve, reject) => {
+            let id = setTimeout(() => {
+                clearTimeout(id);
+                resolve(this.heroStats)
+            }, 5000)
+        });
+
+        Promise.race([updatedHeroStatsPromise, timeoutPromise])
+            .then(createNewGame)
+            .catch(reason => console.log(reason));
     }
 
     randomSamplePop(items) {
