@@ -4,7 +4,7 @@ import {HashRouter, Route, Switch} from 'react-router-dom';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
-import Backend from './firebase';
+import Backend from './backend';
 import * as serviceWorker from './serviceWorker';
 import Header from "./components/header";
 import Welcome from "./components/welcome";
