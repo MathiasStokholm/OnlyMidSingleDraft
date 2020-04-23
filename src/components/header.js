@@ -29,8 +29,6 @@ class Header extends React.Component {
     }
 
     render() {
-        const heroStatsReady = this.props.heroStats != null;
-
         return (
             <div>
                 <Modal isOpen={this.state.newGameDialogShowing} className={this.props.className}
@@ -54,7 +52,7 @@ class Header extends React.Component {
                             <NavLink tag={Link} to="/old">Old App</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink tag={Link} to="/" disabled={!heroStatsReady} onClick={(event) => {
+                            <NavLink tag={Link} to="/" onClick={(event) => {
                                 event.preventDefault();
                                 this.startNewGameClicked();
                             }}>Start New Game</NavLink>

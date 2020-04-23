@@ -23,7 +23,11 @@ class App extends React.Component {
             teams: null,
             radiantMessages: [],
             direMessages: [],
-            heroStats: null
+            heroStats: null,
+            readiness: {
+                radiant: false,
+                dire: false
+            }
         };
 
         this.backend = new Backend((heroStats) => {
@@ -38,6 +42,10 @@ class App extends React.Component {
                 direTeam: teams["dire"],
                 radiantMessages: teams["radiant"]["chat"],
                 direMessages: teams["dire"]["chat"],
+                readiness: {
+                    radiant: teams["radiant"]["ready"],
+                    dire: teams["dire"]["ready"]
+                }
             })
         }, () => {
             console.log("New game detected - forcing all players back to welcome screen");
@@ -49,7 +57,7 @@ class App extends React.Component {
         return (
             <HashRouter basename="/" ref={(router) => { this.router = router; }}>
                 <div>
-                    <Header backend={this.backend} heroStats={this.state.heroStats}/>
+                    <Header backend={this.backend}/>
                     <Main>
                         <Switch>
                             <Route exact
@@ -66,6 +74,7 @@ class App extends React.Component {
                                                             backend={this.backend}
                                                             teamName="radiant"
                                                             team={this.state.radiantTeam}
+                                                            readiness={this.state.readiness}
                                                             heroStats={this.state.heroStats}
                                                             messages={this.state.radiantMessages}/>}
                             />
@@ -75,6 +84,7 @@ class App extends React.Component {
                                                             backend={this.backend}
                                                             teamName="dire"
                                                             team={this.state.direTeam}
+                                                            readiness={this.state.readiness}
                                                             heroStats={this.state.heroStats}
                                                             messages={this.state.direMessages}/>}
                             />

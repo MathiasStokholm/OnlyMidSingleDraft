@@ -100,6 +100,12 @@ class Backend {
             .catch(reason => console.log(reason));
     }
 
+    setReady(teamName, ready) {
+        const path = `teams.${teamName}.ready`;
+        this.gameDoc.update(path, ready)
+            .catch(reason => console.log(reason));
+    }
+
     startNewGame() {
         if (this.heroStats === null) {
             console.log("Cannot create new game - hero stats not loaded yet");
@@ -123,6 +129,7 @@ class Backend {
 
         let createTeam = () => {
             return {
+                ready: false,
                 players: [],
                 chat: [],
                 draft: {

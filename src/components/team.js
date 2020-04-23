@@ -5,7 +5,7 @@ import {
     Modal,
     ModalBody,
     ModalFooter,
-    ModalHeader, Row, Spinner, CardHeader,
+    ModalHeader, Row, Spinner, CardHeader, Progress,
 } from "reactstrap";
 import Chat from "./chat";
 import {Link} from "react-router-dom";
@@ -136,6 +136,22 @@ class Team extends React.Component {
             drafts.push(createPlayerRow(index, player, hero_ids, selected_id));
         }
 
+        const this_team_ready = team["ready"];
+        const radiant_ready = this.props.readiness["radiant"];
+        const dire_ready = this.props.readiness["dire"];
+
+        const readyIndicator = <div style={{"width": "100%", "textAlign": "center", "marginBottom": "30px"}}>
+            <Button style={{"marginBottom": "10px"}}
+                {...(this_team_ready ? {color: "success"} : {color: "secondary"})}
+                    onClick={() => this.props.backend.setReady(teamName, !this_team_ready)}>Ready</Button>
+            <Progress multi>
+                <Progress bar value="50"
+                          {...(radiant_ready ? {color: "success"} : {color: "danger"})}>Radiant</Progress>
+                <Progress bar value="50"
+                          {...(dire_ready ? {color: "success"} : {color: "danger"})}>Dire</Progress>
+            </Progress>
+        </div>
+
         return (
             <Container>
                 <Row>
@@ -143,7 +159,8 @@ class Team extends React.Component {
                         {drafts}
                     </Col>
                     <Col sm="12" md="6">
-                        <h5 style={{"width": "100%", "textAlign": "center"}}>Chat:</h5>
+                        {readyIndicator}
+
                         <Chat backend={this.props.backend}
                               player={this.state.playerName}
                               team={teamName}
