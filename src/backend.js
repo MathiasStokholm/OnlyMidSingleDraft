@@ -138,6 +138,8 @@ class Backend {
                     2: draft(),
                     3: draft(),
                     4: draft(),
+                    5: draft(),
+                    6: draft(),
                 },
                 selectedHeroes: {
                     0: null,
@@ -145,6 +147,8 @@ class Backend {
                     2: null,
                     3: null,
                     4: null,
+                    5: null,
+                    6: null
                 }
             }
         };

@@ -51,7 +51,7 @@ class Welcome extends React.Component {
                                     {radiantPlayers}
                                 </ListGroup>
                                 <Button color="primary" tag={Link} to="/radiant"
-                                        disabled={teams["radiant"]["players"].length >= 5}>Join</Button>
+                                        disabled={teams["radiant"]["players"].length >= 7}>Join</Button>
                             </CardBody>
                         </Card>
                     </Col>
@@ -67,7 +67,7 @@ class Welcome extends React.Component {
                                     {direPlayers}
                                 </ListGroup>
                                 <Button color="primary" tag={Link} to="/dire"
-                                        disabled={teams["dire"]["players"].length >= 5}>Join</Button>
+                                        disabled={teams["dire"]["players"].length >= 7}>Join</Button>
                             </CardBody>
                         </Card>
                     </Col>

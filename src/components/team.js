@@ -58,7 +58,7 @@ class Team extends React.Component {
         const players = team["players"];
         if (playerName == null) {
             // Navigate back to index if team is full
-            if (players.length >= 5) {
+            if (players.length >= 7) {
                 this.props.history.push("/")
             }
 
