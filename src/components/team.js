@@ -109,7 +109,7 @@ class Team extends React.Component {
                                           style={{cursor: "pointer"}}
                                           onClick={() => this.onHeroClicked(playerIndex, hero_id)}
                                           {...(selected ? {color: "info", inverse: true} : {})}>
-                                        <CardImg top src={this.props.backend.convertToApiPath(hero['img'])}
+                                        <CardImg top src={this.props.backend.getImageLink(hero['name'])}
                                                  alt="hero image"/>
                                         <CardHeader style={{
                                             "fontSize": "1.0rem",

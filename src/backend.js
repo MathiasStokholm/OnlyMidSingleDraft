@@ -74,8 +74,9 @@ class Backend {
             .then(result => result.json());
     }
 
-    convertToApiPath(path) {
-        return "https://api.opendota.com" + path
+    getImageLink(hero_name) {
+        // Convert from a hero name like 'npc_dota_hero_windrunner' -> 'http://cdn.dota2.com/apps/dota2/images/heroes/windrunner_full.png'
+        return "http://cdn.dota2.com/apps/dota2/images/heroes/" + hero_name.replace("npc_dota_hero_", "") + "_full.png"
     }
 
     sendChatMessage(team, player, message) {
