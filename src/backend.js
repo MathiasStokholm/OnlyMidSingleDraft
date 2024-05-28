@@ -74,8 +74,9 @@ class Backend {
             .then(result => result.json());
     }
 
-    convertToApiPath(path) {
-        return "https://api.opendota.com" + path
+    getImageLink(hero_name) {
+        // Convert from a hero name like 'npc_dota_hero_windrunner' -> 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/windrunner.png'
+        return "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/" + hero_name.replace("npc_dota_hero_", "") + ".png"
     }
 
     sendChatMessage(team, player, message) {
@@ -113,7 +114,7 @@ class Backend {
         }
 
         // Sort into a lists of int, str and agi
-        let mappedHeroes = {int: [], str: [], agi: []};
+        let mappedHeroes = {int: [], str: [], agi: [], all: []};
         this.heroStats.forEach(hero => {
             const heroAttribute = hero['primary_attr'];
             mappedHeroes[heroAttribute].push(hero)
@@ -123,7 +124,8 @@ class Backend {
             return [
                 this.randomSamplePop(mappedHeroes["int"])["id"],
                 this.randomSamplePop(mappedHeroes["str"])["id"],
-                this.randomSamplePop(mappedHeroes["agi"])["id"]
+                this.randomSamplePop(mappedHeroes["agi"])["id"],
+                this.randomSamplePop(mappedHeroes["all"])["id"]
             ]
         };
 

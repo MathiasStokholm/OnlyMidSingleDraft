@@ -33,7 +33,7 @@ class MainScreen extends React.Component {
 
     performDraft() {
         // Split heroes based on main attribute
-        let mappedHeroes = {int: [], str: [], agi: []};
+        let mappedHeroes = {int: [], str: [], agi: [], all: []};
         this.state.heroes.forEach(hero => {
             const heroAttribute = hero['primary_attr'];
             mappedHeroes[heroAttribute].push(hero)
@@ -45,8 +45,9 @@ class MainScreen extends React.Component {
         });
     }
 
-    convertToApiPath(path) {
-        return "https://api.opendota.com" + path
+    getImageLink(hero_name) {
+        // Convert from a hero name like 'npc_dota_hero_windrunner' -> 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/windrunner.png'
+        return "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/" + hero_name.replace("npc_dota_hero_", "") + ".png"
     }
 
     randomSample(items) {
@@ -70,7 +71,7 @@ class MainScreen extends React.Component {
             .map(hero =>
                 <Col md="4" xs="12" key={hero['id']}>
                     <Card>
-                        <CardImg top width="100%" src={this.convertToApiPath(hero['img'])} alt="hero image" />
+                        <CardImg top width="100%" src={this.getImageLink(hero['name'])} alt="hero image" />
                         <CardBody>
                             <CardTitle><h3>{hero['localized_name']}</h3></CardTitle>
                             <CardSubtitle className="text-primary">
