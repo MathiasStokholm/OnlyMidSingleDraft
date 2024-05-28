@@ -104,7 +104,7 @@ class Team extends React.Component {
                             const selected = hero_id === selected_id;
                             const tooltipId = "Card_" + player + hero_id;
                             return (
-                                <Col xs="4" style={{"padding": "2px"}} key={tooltipId}>
+                                <Col xs="3" style={{"padding": "2px"}} key={tooltipId}>
                                     <Card href="#" id={tooltipId}
                                           style={{cursor: "pointer"}}
                                           onClick={() => this.onHeroClicked(playerIndex, hero_id)}

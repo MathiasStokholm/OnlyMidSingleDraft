@@ -33,7 +33,7 @@ class MainScreen extends React.Component {
 
     performDraft() {
         // Split heroes based on main attribute
-        let mappedHeroes = {int: [], str: [], agi: []};
+        let mappedHeroes = {int: [], str: [], agi: [], all: []};
         this.state.heroes.forEach(hero => {
             const heroAttribute = hero['primary_attr'];
             mappedHeroes[heroAttribute].push(hero)
