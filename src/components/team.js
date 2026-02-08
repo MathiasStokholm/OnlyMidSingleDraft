@@ -134,7 +134,7 @@ class Team extends React.Component {
         for (let index = 0; index < players.length; index++) {
             const player = players[index];
             const rowIndex = startRow + index;
-            const hero_ids = team["draft"][rowIndex.toString()];
+            const hero_ids = team["draft"][rowIndex.toString()] || [];
             const selected_id = team["selectedHeroes"][player];
             drafts.push(createPlayerRow(player, hero_ids, selected_id));
         }
