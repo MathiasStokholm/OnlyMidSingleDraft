@@ -127,12 +127,24 @@ class Team extends React.Component {
             );
         };
 
-        // Get the last N heroes from the shared draft pool where N is the player count
-        const sharedDraftPool = team["draft"];
+        // Get the last N rows from the draft based on player count
+        const draftRows = team["draft"];
         const playerCount = players.length;
-        const availableHeroes = sharedDraftPool.slice(-playerCount); // Get last N heroes
+        
+        // Calculate which rows to use (last N rows, where N = player count)
+        // With 7 total rows (0-6), if playerCount = 3, use rows 4, 5, 6
+        const totalRows = 7;
+        const startRow = Math.max(0, totalRows - playerCount);
+        
+        // Collect all available heroes from the last N rows
+        let availableHeroes = [];
+        for (let rowIndex = startRow; rowIndex < totalRows; rowIndex++) {
+            if (draftRows[rowIndex.toString()]) {
+                availableHeroes = availableHeroes.concat(draftRows[rowIndex.toString()]);
+            }
+        }
 
-        // Create rows for each player showing the same shared pool
+        // Create a row for each player showing the shared pool of available heroes
         let drafts = [];
         for (let index = 0; index < players.length; index++) {
             const player = players[index];

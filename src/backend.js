@@ -120,21 +120,14 @@ class Backend {
             mappedHeroes[heroAttribute].push(hero)
         });
 
-        const draftHeroes = (count) => {
-            let heroes = [];
-            let attempts = 0;
-            const maxAttempts = count * 4; // Prevent infinite loops
-            
-            while (heroes.length < count && attempts < maxAttempts) {
-                // Cycle through attributes to get variety
-                const attributes = ["int", "str", "agi", "all"];
-                const attr = attributes[attempts % attributes.length];
-                if (mappedHeroes[attr].length > 0) {
-                    heroes.push(this.randomSamplePop(mappedHeroes[attr])["id"]);
-                }
-                attempts++;
-            }
-            return heroes;
+        // Create a draft row with 4 heroes (one from each attribute type)
+        const draftRow = () => {
+            return [
+                this.randomSamplePop(mappedHeroes["int"])["id"],
+                this.randomSamplePop(mappedHeroes["str"])["id"],
+                this.randomSamplePop(mappedHeroes["agi"])["id"],
+                this.randomSamplePop(mappedHeroes["all"])["id"]
+            ]
         };
 
         let createTeam = () => {
@@ -142,7 +135,15 @@ class Backend {
                 ready: false,
                 players: [],
                 chat: [],
-                draft: draftHeroes(7), // Draft 7 heroes (max team size)
+                draft: {
+                    0: draftRow(),
+                    1: draftRow(),
+                    2: draftRow(),
+                    3: draftRow(),
+                    4: draftRow(),
+                    5: draftRow(),
+                    6: draftRow(),
+                },
                 selectedHeroes: {}
             }
         };
