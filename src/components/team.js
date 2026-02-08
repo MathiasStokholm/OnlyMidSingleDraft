@@ -127,29 +127,16 @@ class Team extends React.Component {
             );
         };
 
-        // Get the last N rows from the draft based on player count
-        const draftRows = team["draft"];
-        const playerCount = players.length;
-        
-        // Calculate which rows to use (last N rows, where N = player count)
-        // With 7 total rows (0-6), if playerCount = 3, use rows 4, 5, 6
-        const totalRows = 7;
-        const startRow = Math.max(0, totalRows - playerCount);
-        
-        // Collect all available heroes from the last N rows
-        let availableHeroes = [];
-        for (let rowIndex = startRow; rowIndex < totalRows; rowIndex++) {
-            if (draftRows[rowIndex.toString()]) {
-                availableHeroes = availableHeroes.concat(draftRows[rowIndex.toString()]);
-            }
-        }
-
-        // Create a row for each player showing the shared pool of available heroes
+        // Look up drafts for players on team (using last N rows)
         let drafts = [];
+        const totalRows = 7;
+        const startRow = Math.max(0, totalRows - players.length);
         for (let index = 0; index < players.length; index++) {
             const player = players[index];
+            const rowIndex = startRow + index;
+            const hero_ids = team["draft"][rowIndex.toString()];
             const selected_id = team["selectedHeroes"][player];
-            drafts.push(createPlayerRow(player, availableHeroes, selected_id));
+            drafts.push(createPlayerRow(player, hero_ids, selected_id));
         }
 
         const this_team_ready = team["ready"];
