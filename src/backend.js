@@ -95,8 +95,8 @@ class Backend {
             .catch(reason => console.log(reason));
     }
 
-    setSelectedHero(teamName, playerIndex, heroId) {
-        const path = `teams.${teamName}.selectedHeroes.${playerIndex}`;
+    setSelectedHero(teamName, playerName, heroId) {
+        const path = `teams.${teamName}.selectedHeroes.${playerName}`;
         this.gameDoc.update(path, heroId)
             .catch(reason => console.log(reason));
     }
@@ -120,13 +120,17 @@ class Backend {
             mappedHeroes[heroAttribute].push(hero)
         });
 
-        const draft = () => {
-            return [
-                this.randomSamplePop(mappedHeroes["int"])["id"],
-                this.randomSamplePop(mappedHeroes["str"])["id"],
-                this.randomSamplePop(mappedHeroes["agi"])["id"],
-                this.randomSamplePop(mappedHeroes["all"])["id"]
-            ]
+        const draftHeroes = (count) => {
+            let heroes = [];
+            for (let i = 0; i < count; i++) {
+                // Cycle through attributes to get variety
+                const attributes = ["int", "str", "agi", "all"];
+                const attr = attributes[i % attributes.length];
+                if (mappedHeroes[attr].length > 0) {
+                    heroes.push(this.randomSamplePop(mappedHeroes[attr])["id"]);
+                }
+            }
+            return heroes;
         };
 
         let createTeam = () => {
@@ -134,24 +138,8 @@ class Backend {
                 ready: false,
                 players: [],
                 chat: [],
-                draft: {
-                    0: draft(),
-                    1: draft(),
-                    2: draft(),
-                    3: draft(),
-                    4: draft(),
-                    5: draft(),
-                    6: draft(),
-                },
-                selectedHeroes: {
-                    0: null,
-                    1: null,
-                    2: null,
-                    3: null,
-                    4: null,
-                    5: null,
-                    6: null
-                }
+                draft: draftHeroes(7), // Draft 7 heroes (max team size)
+                selectedHeroes: {}
             }
         };
 
