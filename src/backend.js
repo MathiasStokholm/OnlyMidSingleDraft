@@ -122,13 +122,17 @@ class Backend {
 
         const draftHeroes = (count) => {
             let heroes = [];
-            for (let i = 0; i < count; i++) {
+            let attempts = 0;
+            const maxAttempts = count * 4; // Prevent infinite loops
+            
+            while (heroes.length < count && attempts < maxAttempts) {
                 // Cycle through attributes to get variety
                 const attributes = ["int", "str", "agi", "all"];
-                const attr = attributes[i % attributes.length];
+                const attr = attributes[attempts % attributes.length];
                 if (mappedHeroes[attr].length > 0) {
                     heroes.push(this.randomSamplePop(mappedHeroes[attr])["id"]);
                 }
+                attempts++;
             }
             return heroes;
         };

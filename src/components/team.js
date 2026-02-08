@@ -127,10 +127,10 @@ class Team extends React.Component {
             );
         };
 
-        // Get the last N heroes from the draft pool where N is the player count
-        const draftPool = team["draft"];
+        // Get the last N heroes from the shared draft pool where N is the player count
+        const sharedDraftPool = team["draft"];
         const playerCount = players.length;
-        const availableHeroes = draftPool.slice(-playerCount); // Get last N heroes
+        const availableHeroes = sharedDraftPool.slice(-playerCount); // Get last N heroes
 
         // Create rows for each player showing the same shared pool
         let drafts = [];
