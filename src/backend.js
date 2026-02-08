@@ -122,12 +122,16 @@ class Backend {
 
         // Create a draft row with 4 heroes (one from each attribute type)
         const draftRow = () => {
-            return [
-                this.randomSamplePop(mappedHeroes["int"])["id"],
-                this.randomSamplePop(mappedHeroes["str"])["id"],
-                this.randomSamplePop(mappedHeroes["agi"])["id"],
-                this.randomSamplePop(mappedHeroes["all"])["id"]
-            ]
+            let row = [];
+            const attributes = ["int", "str", "agi", "all"];
+            for (let attr of attributes) {
+                if (mappedHeroes[attr].length > 0) {
+                    row.push(this.randomSamplePop(mappedHeroes[attr])["id"]);
+                } else {
+                    console.warn(`No heroes available for attribute: ${attr}`);
+                }
+            }
+            return row;
         };
 
         let createTeam = () => {
