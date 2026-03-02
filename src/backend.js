@@ -96,9 +96,40 @@ class Backend {
     }
 
     setSelectedHero(teamName, playerName, heroId) {
-        const path = `teams.${teamName}.selectedHeroes.${playerName}`;
-        this.gameDoc.update(path, heroId)
-            .catch(reason => console.log(reason));
+        // Get current game data to access team info
+        this.gameDoc.get().then(doc => {
+            const gameData = doc.data();
+            const team = gameData.teams[teamName];
+            const playerCount = team.players.length;
+            
+            // Get current selections (array format)
+            let selectedHeroes = team.selectedHeroes || [];
+            
+            // Remove this hero if already selected (toggle behavior)
+            const existingIndex = selectedHeroes.findIndex(s => s.heroId === heroId);
+            if (existingIndex !== -1) {
+                selectedHeroes.splice(existingIndex, 1);
+            } else {
+                // Add new selection with timestamp
+                selectedHeroes.push({
+                    heroId: heroId,
+                    playerName: playerName,
+                    timestamp: firebase.firestore.Timestamp.fromDate(new Date())
+                });
+                
+                // Keep only N most recent selections (where N = player count)
+                if (selectedHeroes.length > playerCount) {
+                    // Sort by timestamp and keep only the most recent N
+                    selectedHeroes.sort((a, b) => a.timestamp.seconds - b.timestamp.seconds);
+                    selectedHeroes = selectedHeroes.slice(-playerCount);
+                }
+            }
+            
+            // Update the database
+            const path = `teams.${teamName}.selectedHeroes`;
+            this.gameDoc.update(path, selectedHeroes)
+                .catch(reason => console.log(reason));
+        }).catch(reason => console.log(reason));
     }
 
     setReady(teamName, ready) {
@@ -148,7 +179,7 @@ class Backend {
                     5: draftRow(),
                     6: draftRow(),
                 },
-                selectedHeroes: {}
+                selectedHeroes: []  // Changed to array format
             }
         };
 
