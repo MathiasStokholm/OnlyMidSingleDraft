@@ -36,8 +36,8 @@ class Team extends React.Component {
         this.props.backend.setPlayerName(this.props.teamName, chosenPlayerName);
     }
 
-    onHeroClicked(playerIndex, heroId) {
-        this.props.backend.setSelectedHero(this.props.teamName, playerIndex, heroId)
+    onHeroClicked(playerName, heroId) {
+        this.props.backend.setSelectedHero(this.props.teamName, playerName, heroId)
     }
 
     render() {
@@ -90,7 +90,11 @@ class Team extends React.Component {
             return heroStats.filter(hero => hero["id"] === idx)[0];
         };
 
-        const createPlayerRow = (playerIndex, player, hero_ids, selected_id) => {
+        // Get team's selected heroes (array format)
+        const selectedHeroes = team["selectedHeroes"] || [];
+        const selectedHeroIds = selectedHeroes.map(s => s.heroId);
+
+        const createPlayerRow = (player, hero_ids) => {
             return (
                 <Row style={{"marginBottom": "10px"}} key={player}>
                     <div style={{"width": "100%", "textAlign": "center"}}>
@@ -101,13 +105,13 @@ class Team extends React.Component {
                     <Row style={{"marginLeft": "0px", "marginRight": "0px"}}>
                         {hero_ids.map(hero_id => {
                             const hero = findHero(hero_id);
-                            const selected = hero_id === selected_id;
+                            const selected = selectedHeroIds.includes(hero_id);
                             const tooltipId = "Card_" + player + hero_id;
                             return (
                                 <Col xs="3" style={{"padding": "2px"}} key={tooltipId}>
                                     <Card href="#" id={tooltipId}
                                           style={{cursor: "pointer"}}
-                                          onClick={() => this.onHeroClicked(playerIndex, hero_id)}
+                                          onClick={() => this.onHeroClicked(player, hero_id)}
                                           {...(selected ? {color: "info", inverse: true} : {})}>
                                         <CardImg top src={this.props.backend.getImageLink(hero['name'])}
                                                  alt="hero image"/>
@@ -127,13 +131,15 @@ class Team extends React.Component {
             );
         };
 
-        // Look up drafts for players on team
+        // Look up drafts for players on team (using last N rows)
         let drafts = [];
+        const totalRows = 7;
+        const startRow = Math.max(0, totalRows - players.length);
         for (let index = 0; index < players.length; index++) {
             const player = players[index];
-            const hero_ids = team["draft"][index.toString()];
-            const selected_id = team["selectedHeroes"][index.toString()];
-            drafts.push(createPlayerRow(index, player, hero_ids, selected_id));
+            const rowIndex = startRow + index;
+            const hero_ids = team["draft"][rowIndex.toString()] || [];
+            drafts.push(createPlayerRow(player, hero_ids));
         }
 
         const this_team_ready = team["ready"];
